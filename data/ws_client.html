@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebSocket 测试</title>
+</head>
+<body>
+    <h1>WebSocket 测试</h1>
+
+    <script>
+        var wsUrl = 'ws://127.0.0.1:8812';
+        var websocket = new WebSocket(wsUrl);
+
+
+        // 示例化对象onopen属性
+        websocket.onopen = function (evt) {
+            websocket.send('hello-songyaofeng');
+            console.log('swoole-websocket-connect-success');
+        };
+
+        // 实例化onmessage
+        websocket.onmessage = function (evt) {
+
+            console.log('ws-server-return-data:' + evt.data);
+        };
+
+        //
+        websocket.onclose = function(evt) {
+            console.log('close');
+        };
+
+        websocket.onerror = function (evt) {
+            console.log('Error: ' + evt.data);
+        }
+        ;
+    </script>
+</body>
+</html>
