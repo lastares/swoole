@@ -1,27 +1,40 @@
 <?php
+
 namespace app\index\controller;
+
+use app\extend\rlyun\SendTemplateSMS;
+
+require_once APP_PATH . '../extend/rlyun/SendTemplateSMS.php';
 
 class Index
 {
     public function index()
     {
-        $a = false;
-        echo $a && '6666';
-
-//        echo '<h1>Hello, TihinkPhp</h1>';
+        echo 'I am Index action';
     }
 
-    public function add()
+    public function hello($name = 'ThinkPHP5')
     {
-        echo random_int(1, 10) . 'test' . PHP_EOL;
-        echo 'I am Add' . PHP_EOL;
+        return 'hello,' . $name;
     }
-    
-    public function test()
+
+    public function sms()
     {
-        echo random_int(1, 10) . 'test' . PHP_EOL;
-        echo 'I am test' . PHP_EOL;
+        $mobile = '17682349912';
+        $code = $this->randString();
+        $data = [$code, '5'];
+        $messge = new SendTemplateSMS();
+        return $messge->sendTemplateSMS($mobile, $data);
+    }
+
+    public function randString($len = 6)
+    {
+        $chars = str_repeat('0123456789', 3);
+        // 位数过长重复字符串一定次数
+        $chars = str_repeat($chars, $len);
+        $chars = str_shuffle($chars);
+        $str = substr($chars, 0, $len);
+        return $str;
     }
 
 }
-
