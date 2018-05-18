@@ -1,6 +1,6 @@
 <?php
 
-$http_server = new swoole_http_server('0.0.0.0', 8816);
+$http_server = new swoole_http_server('0.0.0.0', 8811);
 $http_server->set([
         'enable_static_handler' => true,
         'document_root' => '/usr/local/nginx/html/swoole/thinkphp/public/static',
@@ -15,6 +15,9 @@ $http_server->on('WorkerStart', function(swoole_server $server, $worker_id) {
     // ThinkPHP 引导文件
     // 1. 加载基础文件
     require __DIR__ . '/../thinkphp/base.php';
+});
+$http_server->on('WorkStop', function (swoole_server $server, $worker_id) {
+
 });
 $http_server->on('request', function (swoole_http_request $request, swoole_http_response $response) use ($http_server) {
 
@@ -40,16 +43,17 @@ $http_server->on('request', function (swoole_http_request $request, swoole_http_
     ob_start();
     try {
         // 执行应用并响应
-        think\Container::get('app', [defined('APP_PATH') ? APP_PATH : ''])
+        think\Container::get('app', [APP_PATH])
             ->run()
             ->send();
     } catch (\Exception $exception) {
         // todo
     }
-    // echo '--Action--' . request()->action() . PHP_EOL;
+     // echo '--Action--' . request()->action() . PHP_EOL;
     $res = ob_get_contents();
     ob_end_clean();
     $response->end($res);
+    $http_server->stop();
 });
 
 $http_server->start();
