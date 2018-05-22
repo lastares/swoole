@@ -25,7 +25,7 @@ class Base
     {
         $this->data[self::FIELD_CODE] = 1;
         $this->data[self::FIELD_MESSAGE] = $msg;
-        return $this->data;
+        return json($this->data);
     }
 
     protected function success($msg = '操作成功', $data = [])
@@ -33,7 +33,7 @@ class Base
         $this->data[self::FIELD_CODE] = 0;
         $this->data[self::FIELD_MESSAGE] = $msg;
         $this->data[self::FIELD_DATA] = $data;
-        return $this->data;
+        return json($this->data);
     }
 
 }

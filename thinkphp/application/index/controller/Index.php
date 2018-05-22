@@ -16,6 +16,7 @@ class Index extends Base
 
     public function __construct(Request $request)
     {
+
         $this->request = $request;
     }
 
@@ -29,9 +30,14 @@ class Index extends Base
         return 'hello,' . $name;
     }
 
+    public function test()
+    {
+        echo 'I am test action' . PHP_EOL;
+    }
+
     public function sendMessage()
     {
-        echo 5555;
+        echo header("Access-Control-Allow-Origin:*");
         $mobile = $this->request->param('mobile');
         if (empty($mobile)) {
             return $this->error('手机号不能为空');
@@ -39,16 +45,13 @@ class Index extends Base
         $code = $this->randString();
         $message = new SendTemplateSMS();
         $sendMsgResult = $message->sendTemplateSMS($mobile, [$code, '2']);
-        if ($sendMsgResult == true) {
-            echo 666;
+        if ($sendMsgResult) {
             $redis = new \Swoole\Coroutine\Redis();
             $redis->connect(config('redis.host'), config('redis.port'));
             $setKeyResult = $redis->set(Redis::smsKey($mobile), $code, config('redis.expired'));
-            var_dump($setKeyResult);
-            return json_encode(['code' => 0, 'msg' => '短信发送成功'], JSON_UNESCAPED_UNICODE);
-//            if ($setKeyResult == 'ok') {
-//                return $this->success('短信发送成功');
-//            }
+            if ($setKeyResult == 'ok') {
+                return $this->success('短信发送成功');
+            }
         }
         return $this->error('短信发送失败');
     }
